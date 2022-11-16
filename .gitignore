@@ -1,0 +1,16 @@
+.DS_Store
+
+.log
+*.sqlite3
+*.sqlite3-journal
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+.env
+env/
+
+.vscode/
+
+config.py
