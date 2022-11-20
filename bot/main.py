@@ -1,5 +1,6 @@
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters import Text
+from aiogram.types.input_file import InputFile
 
 from config import TELEGRAM_TOKEN
 from keyboards import main_keyboard, album_keyboard
@@ -25,13 +26,17 @@ async def proc_cmd_start(message: types.Message):
 @dp.message_handler(Text(equals='Surprise Me!'))
 async def proc_txt_random_album(message: types.Message):
     random_album = get_random_album()
-    await bot.send_photo(
+    cover = InputFile('bot/img/1.jpg')
+    print(f'DBG:: {cover.attachment_key}')
+    id_photo = await bot.send_photo(
         chat_id=message.chat.id,
-        photo=random_album.cover,
+        photo=cover,
         caption=f'<b>{random_album.title}</b> by {random_album.artist}, <em>{random_album.year}</em>',
         parse_mode='HTML',
         reply_markup=album_keyboard,
     )
+    id = id_photo['photo'][0]['file_id']
+    print(f'DBG:: id={id}')
     await message.delete()
 
 
