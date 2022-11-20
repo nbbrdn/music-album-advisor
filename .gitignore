@@ -3,6 +3,7 @@
 .log
 *.sqlite3
 *.sqlite3-journal
+*.db
 
 __pycache__/
 *.py[cod]
@@ -15,3 +16,5 @@ env/
 
 config.py
 img/
+
+media/
