@@ -19,7 +19,8 @@ def parse_page(url: str):
     description_div = soup.find_all(
         'div', class_='static-album--description--column'
     )[1]
-    album['description'] = description_div.find('p').text
+    description = description_div.find('p').text
+    album['description'] = description
 
     streaming_div = soup.find('div', class_='streaming-wrapper')
     streaming_urls = streaming_div.find_all('a')
@@ -161,7 +162,7 @@ def proc_album_list(con, limit=1):
 
 def main():
     con = prepare_db()
-    proc_album_list(con, limit=20)
+    proc_album_list(con, limit=100)
     con.close()
 
 
