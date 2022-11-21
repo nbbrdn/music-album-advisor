@@ -4,7 +4,12 @@ from aiogram.types.input_file import InputFile
 
 from config import TELEGRAM_TOKEN
 from keyboards import main_keyboard, generate_album_keyboard
-from controllers import get_random_album, register_user
+from controllers import (
+    get_random_album,
+    register_user,
+    register_user_activity,
+    log_bot_stop,
+)
 
 bot = Bot(TELEGRAM_TOKEN)
 dp = Dispatcher(bot)
@@ -16,7 +21,14 @@ async def on_startup(_):
 
 @dp.message_handler(commands=['start'])
 async def proc_cmd_start(message: types.Message):
-    register_user(message.from_user.id, message.from_user.first_name)
+    register_user(
+        message.from_user.id,
+        message.from_user.username,
+        message.from_user.first_name,
+        message.from_user.last_name,
+        message.from_user.language_code,
+    )
+
     await message.answer(
         text='Welcome to the music album advisor! 🎧',
         reply_markup=main_keyboard,
@@ -24,8 +36,17 @@ async def proc_cmd_start(message: types.Message):
     await message.delete()
 
 
+@dp.message_handler(commands=['stop'])
+async def proc_cmd_stop(message: types.Message):
+    log_bot_stop(message.from_user.id)
+    await message.answer(text='We will miss you too much!')
+    await message.delete()
+
+
 @dp.message_handler(Text(equals='Surprise Me!'))
 async def proc_txt_random_album(message: types.Message):
+    register_user_activity(message.from_user.id)
+
     album = get_random_album()
     cover = InputFile(f'media/{album.cover}')
 

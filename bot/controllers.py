@@ -13,25 +13,86 @@ def generate_spotify_url(uri):
     return f'https://open.spotify.com/album/{id}'
 
 
-def register_user(user_id, user_first_name):
+def reactivate_user(user_id):
     con = sqlite3.connect('albums.db')
     cur = con.cursor()
 
-    cur.execute(f"SELECT Count() FROM users WHERE user_id = '{user_id}'")
+    cur.execute(
+        f"SELECT Count() FROM users WHERE user_id = '{user_id}' AND is_active = 0"
+    )
+    if cur.fetchone()[0] > 0:
+        cur.execute(
+            """
+            UPDATE users SET is_active = 1, restart_date = ? WHERE user_id = ?
+            """,
+            (datetime.datetime.now(), user_id),
+        )
+        con.commit()
+    con.close()
+
+
+def register_user(
+    id, username, first_name=None, last_name=None, lang_code=None
+):
+    con = sqlite3.connect('albums.db')
+    cur = con.cursor()
+
+    cur.execute(f"SELECT Count() FROM users WHERE user_id = '{id}'")
     if cur.fetchone()[0] > 0:
         con.close()
+        reactivate_user(id)
         return
 
     cur.execute(
         """
             INSERT INTO users(
-                user_id, user_name, join_date
-            ) VALUES (?, ?, ?)
+                user_id, user_name, first_name, last_name,
+                language_code, join_date
+            ) VALUES (?, ?, ?, ?, ?, ?)
             """,
-        (user_id, user_first_name, datetime.datetime.now()),
+        (
+            id,
+            username,
+            first_name,
+            last_name,
+            lang_code,
+            datetime.datetime.now(),
+        ),
     )
     con.commit()
+    con.close()
 
+
+def log_bot_stop(user_id):
+    con = sqlite3.connect('albums.db')
+    cur = con.cursor()
+
+    cur.execute(
+        """
+        UPDATE users SET is_active = 0, stop_date = ? WHERE user_id = ?
+        """,
+        (datetime.datetime.now(), user_id),
+    )
+
+    con.commit()
+    con.close()
+
+
+def register_user_activity(user_id):
+    con = sqlite3.connect('albums.db')
+    cur = con.cursor()
+
+    cur.execute(f"SELECT Count() FROM users WHERE user_id = '{user_id}'")
+    if cur.fetchone()[0] == 0:
+        register_user(user_id)
+
+    cur.execute(
+        """
+        UPDATE users SET last_activity_date = ? WHERE user_id = ?
+        """,
+        (datetime.datetime.now(), user_id),
+    )
+    con.commit()
     con.close()
 
 
