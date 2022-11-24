@@ -1,15 +1,21 @@
+import os
+
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.dispatcher.filters import Text
 from aiogram.types.input_file import InputFile
+from dotenv import load_dotenv
 
-from config import TELEGRAM_TOKEN
-from keyboards import main_keyboard, generate_album_keyboard
-from controllers import (
+from app.keyboards import main_keyboard, generate_album_keyboard
+from app.controllers import (
     get_random_album,
     register_user,
     register_user_activity,
     log_bot_stop,
 )
+
+load_dotenv()
+
+TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 
 bot = Bot(TELEGRAM_TOKEN)
 dp = Dispatcher(bot)
@@ -45,12 +51,19 @@ async def proc_cmd_stop(message: types.Message):
 
 @dp.message_handler(Text(equals='Surprise Me!'))
 async def proc_txt_random_album(message: types.Message):
-    register_user_activity(message.from_user.id)
+    register_user_activity(message.from_user)
 
     album = get_random_album()
-    cover = InputFile(f'media/{album.cover}')
+    if not album:
+        await message.answer(text='Can not find any album 😭')
+    try:
+        cover = InputFile(f'app/img/{album.cover}')
+    except Exception as e:
+        print(e)
+        cover = InputFile('app/img/404-error.webp')
 
-    id_photo = await bot.send_photo(
+    # id_photo = await bot.send_photo(
+    await bot.send_photo(
         chat_id=message.chat.id,
         photo=cover,
         caption=f'<b>{album.title}</b> by {album.artist}, <em>{album.year}</em>',
@@ -62,8 +75,8 @@ async def proc_txt_random_album(message: types.Message):
             youtube_url=album.youtube_url,
         ),
     )
-    id = id_photo['photo'][0]['file_id']
-    print(f'DBG:: id={id}')
+    # id = id_photo['photo'][0]['file_id']
+    # print(f'DBG:: id={id}')
     await message.delete()
 
 

@@ -17,5 +17,16 @@ services:
       - postgres_data:/var/lib/postgresql/data/
       - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
 
+  bot:
+    build: ./bot
+    env_file:
+      - ".env"
+    command: python main.py
+    volumes:
+      - ./bot:/usr/src/advisor/
+    restart: always
+    depends_on:
+      - db
+
 volumes:
   postgres_data:
