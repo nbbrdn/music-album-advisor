@@ -36,7 +36,7 @@ def reactivate_user(user_id):
             cursor.execute(
                 """
                 UPDATE advisor.public.users
-                SET is_active = 1, restart_date = %s
+                SET is_active = true, restart_date = %s
                 WHERE telegram_id = %s
                 """,
                 (datetime.datetime.now(), user_id),
@@ -78,8 +78,8 @@ def register_user(
                 """
                 INSERT INTO advisor.public.users(
                     telegram_id, user_name, first_name, last_name,
-                    language_code, register_date
-                ) VALUES (%s, %s, %s, %s, %s, %s)
+                    language_code, register_date, is_active
+                ) VALUES (%s, %s, %s, %s, %s, %s, true)
                 """,
                 (
                     id,
