@@ -46,11 +46,20 @@ def reactivate_user(user_id):
 
 def register_user(
     id,
-    username='unknown',
-    first_name='unknown',
-    last_name='unknown',
-    lang_code='na',
+    username=None,
+    first_name=None,
+    last_name=None,
+    lang_code=None,
 ):
+
+    if not username:
+        username = 'unknown'
+    if not first_name:
+        first_name = 'unknown'
+    if not last_name:
+        last_name = 'unknown'
+    if not lang_code:
+        lang_code = 'na'
 
     with psycopg2.connect(**dsn) as conn, conn.cursor() as cursor:
         cursor.execute(
