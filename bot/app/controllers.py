@@ -7,7 +7,7 @@ dsn = {
     'dbname': 'advisor',
     'user': 'advisor',
     'password': 'advisor',
-    'host': 'localhost',
+    'host': 'db',
     'port': 5432,
     'options': '-c search_path=content',
 }
@@ -28,7 +28,7 @@ def reactivate_user(user_id):
             """
             SELECT COUNT(*)
             FROM advisor.public.users
-            WHERE telegram_id = %s AND is_active = 0
+            WHERE telegram_id = %s AND is_active = 'yes'
             """,
             (user_id,),
         ),
@@ -58,27 +58,25 @@ def register_user(
         )
 
         if cursor.fetchone()[0] > 0:
-            conn.close()
             reactivate_user(id)
-            return
-
-        cursor.execute(
-            """
-            INSERT INTO advisor.public.users(
-                telegram_id, user_name, first_name, last_name,
-                language_code, register_date
-            ) VALUES (%s, %s, %s, %s, %s, %s)
-            """,
-            (
-                id,
-                username,
-                first_name,
-                last_name,
-                lang_code,
-                datetime.datetime.now(),
-            ),
-        )
-        conn.commit()
+        else:
+            cursor.execute(
+                """
+                INSERT INTO advisor.public.users(
+                    telegram_id, user_name, first_name, last_name,
+                    language_code, register_date
+                ) VALUES (%s, %s, %s, %s, %s, %s)
+                """,
+                (
+                    id,
+                    username,
+                    first_name,
+                    last_name,
+                    lang_code,
+                    datetime.datetime.now(),
+                ),
+            )
+            conn.commit()
 
 
 def log_bot_stop(user_id):
@@ -86,7 +84,7 @@ def log_bot_stop(user_id):
         cursor.execute(
             """
             UPDATE advisor.public.users
-            SET is_active = 0, stop_date = %s
+            SET is_active = 'false', stop_date = %s
             WHERE telegram_id = %s
             """,
             (datetime.datetime.now(), user_id),

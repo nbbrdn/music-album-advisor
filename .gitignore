@@ -15,6 +15,4 @@ env/
 .vscode/
 
 config.py
-img/
-
-media/
+bot/media/covers/*.jpg

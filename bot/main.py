@@ -25,6 +25,18 @@ async def on_startup(_):
     print('Bot has been started.')
 
 
+@dp.message_handler(commands=['help'])
+async def proc_cmd_help(message: types.Message):
+    await message.answer(
+        text=(
+            'The bot gives you a random album from the '
+            '"1001 Albums You Must Hear Before You Die" list.'
+        ),
+        reply_markup=main_keyboard,
+    )
+    await message.delete()
+
+
 @dp.message_handler(commands=['start'])
 async def proc_cmd_start(message: types.Message):
     register_user(
@@ -57,7 +69,7 @@ async def proc_txt_random_album(message: types.Message):
     if not album:
         await message.answer(text='Can not find any album 😭')
     try:
-        cover = InputFile(f'app/img/{album.cover}')
+        cover = InputFile(f'media/covers/{album.cover}')
     except Exception as e:
         print(e)
         cover = InputFile('app/img/404-error.webp')
