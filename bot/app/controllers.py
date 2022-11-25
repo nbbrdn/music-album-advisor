@@ -160,3 +160,25 @@ def get_random_album():
         )
 
         return album
+
+
+def count_users():
+    with psycopg2.connect(**dsn) as conn, conn.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT COUNT(*)
+            FROM advisor.public.users
+            """
+        )
+        return cursor.fetchone()[0]
+
+
+def count_albums():
+    with psycopg2.connect(**dsn) as conn, conn.cursor() as cursor:
+        cursor.execute(
+            """
+            SELECT COUNT(*)
+            FROM advisor.public.albums
+            """
+        )
+        return cursor.fetchone()[0]

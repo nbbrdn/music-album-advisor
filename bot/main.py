@@ -11,6 +11,8 @@ from app.controllers import (
     register_user,
     register_user_activity,
     log_bot_stop,
+    count_users,
+    count_albums,
 )
 
 load_dotenv()
@@ -34,6 +36,14 @@ async def proc_cmd_help(message: types.Message):
         ),
         reply_markup=main_keyboard,
     )
+    await message.delete()
+
+
+@dp.message_handler(commands=['stat'])
+async def proc_cmd_stat(message: types.Message):
+    users_cnt = count_users()
+    albums_cnt = count_albums()
+    await message.answer(text=f'Users: {users_cnt}\nAlbums: {albums_cnt}')
     await message.delete()
 
 
