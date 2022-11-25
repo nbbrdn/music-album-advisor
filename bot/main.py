@@ -75,10 +75,13 @@ async def proc_txt_random_album(message: types.Message):
         cover = InputFile('app/img/404-error.webp')
 
     # id_photo = await bot.send_photo(
+    title = album.title
+    artist = album.artist
+    year = album.year
     await bot.send_photo(
         chat_id=message.chat.id,
         photo=cover,
-        caption=f'<b>{album.title}</b> by {album.artist}, <em>{album.year}</em>',
+        caption=f'<b>{title}</b> by {artist}, <em>{year}</em>',
         parse_mode='HTML',
         reply_markup=generate_album_keyboard(
             wiki_url=album.wiki,
