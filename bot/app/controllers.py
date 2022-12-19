@@ -33,14 +33,12 @@ def reactivate_user(user_id):
             (user_id,),
         ),
         if cursor.fetchone()[0] > 0:
-            cursor.execute(
-                """
+            sql = """
                 UPDATE advisor.public.users
                 SET is_active = true, restart_date = %s
-                WHERE telegram_id = %s
-                """,
-                (datetime.datetime.now(), user_id),
-            )
+                WHERE telegram_id = %s;
+            """
+            cursor.execute(sql, (datetime.datetime.now(), user_id))
             conn.commit()
 
 
