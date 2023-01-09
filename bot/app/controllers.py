@@ -4,12 +4,12 @@ import psycopg2
 from .models import MusicAlbum
 
 dsn = {
-    'dbname': 'advisor',
-    'user': 'advisor',
-    'password': 'advisor',
-    'host': 'db',
-    'port': 5432,
-    'options': '-c search_path=content',
+    "dbname": "advisor",
+    "user": "advisor",
+    "password": "advisor",
+    "host": "db",
+    "port": 5432,
+    "options": "-c search_path=content",
 }
 
 
@@ -18,8 +18,8 @@ def generate_spotify_url(uri):
     spotify:album:7yQtjAjhtNi76KRu05XWFS
     spotify_url='https://open.spotify.com/album/7yqtjajhtni76kru05xwfs',
     """
-    id = uri.split(':')[-1].lower()
-    return f'https://open.spotify.com/album/{id}'
+    id = uri.split(":")[-1].lower()
+    return f"https://open.spotify.com/album/{id}"
 
 
 def reactivate_user(user_id):
@@ -51,13 +51,13 @@ def register_user(
 ):
 
     if not username:
-        username = 'unknown'
+        username = "unknown"
     if not first_name:
-        first_name = 'unknown'
+        first_name = "unknown"
     if not last_name:
-        last_name = 'unknown'
+        last_name = "unknown"
     if not lang_code:
-        lang_code = 'na'
+        lang_code = "na"
 
     with psycopg2.connect(**dsn) as conn, conn.cursor() as cursor:
         cursor.execute(
@@ -150,7 +150,7 @@ def get_random_album():
             artist=raw_data[1],
             title=raw_data[2],
             year=raw_data[3],
-            cover=raw_data[4] + '.jpg',
+            cover=raw_data[4] + ".jpg",
             wiki=raw_data[5],
             spotify_url=generate_spotify_url(raw_data[7]),
             apple_url=raw_data[8],

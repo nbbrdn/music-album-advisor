@@ -6,16 +6,16 @@ from aiogram.types import (
 )
 
 main_keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
-random_album_button = KeyboardButton(text='Surprise Me!')
+random_album_button = KeyboardButton(text="Surprise Me!")
 main_keyboard.add(random_album_button)
 
 
 def generate_album_keyboard(wiki_url, spotify_url, apple_url, youtube_url):
     album_keyboard = InlineKeyboardMarkup(row_width=2)
-    spotify_button = InlineKeyboardButton('Spotify', url=spotify_url)
-    apple_button = InlineKeyboardButton('Apple Music', url=apple_url)
+    spotify_button = InlineKeyboardButton("Spotify", url=spotify_url)
+    apple_button = InlineKeyboardButton("Apple Music", url=apple_url)
     youtube_button = InlineKeyboardButton(
-        text='YouTube',
+        text="YouTube",
         url=youtube_url,
     )
 

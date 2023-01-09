@@ -17,21 +17,21 @@ from app.controllers import (
 
 load_dotenv()
 
-TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN', '')
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "")
 
 bot = Bot(TELEGRAM_TOKEN)
 dp = Dispatcher(bot)
 
 
 async def on_startup(_):
-    print('Bot has been started.')
+    print("Bot has been started.")
 
 
-@dp.message_handler(commands=['help'])
+@dp.message_handler(commands=["help"])
 async def proc_cmd_help(message: types.Message):
     await message.answer(
         text=(
-            'The bot gives you a random album from the '
+            "The bot gives you a random album from the "
             '"1001 Albums You Must Hear Before You Die" list.'
         ),
         reply_markup=main_keyboard,
@@ -39,15 +39,15 @@ async def proc_cmd_help(message: types.Message):
     await message.delete()
 
 
-@dp.message_handler(commands=['stat'])
+@dp.message_handler(commands=["stat"])
 async def proc_cmd_stat(message: types.Message):
     users_cnt = count_users()
     albums_cnt = count_albums()
-    await message.answer(text=f'Users: {users_cnt}\nAlbums: {albums_cnt}')
+    await message.answer(text=f"Users: {users_cnt}\nAlbums: {albums_cnt}")
     await message.delete()
 
 
-@dp.message_handler(commands=['start'])
+@dp.message_handler(commands=["start"])
 async def proc_cmd_start(message: types.Message):
     register_user(
         message.from_user.id,
@@ -58,31 +58,31 @@ async def proc_cmd_start(message: types.Message):
     )
 
     await message.answer(
-        text='Welcome to the music album advisor! 🎧',
+        text="Welcome to the music album advisor! 🎧",
         reply_markup=main_keyboard,
     )
     await message.delete()
 
 
-@dp.message_handler(commands=['stop'])
+@dp.message_handler(commands=["stop"])
 async def proc_cmd_stop(message: types.Message):
     log_bot_stop(message.from_user.id)
-    await message.answer(text='We will miss you too much!')
+    await message.answer(text="We will miss you too much!")
     await message.delete()
 
 
-@dp.message_handler(Text(equals='Surprise Me!'))
+@dp.message_handler(Text(equals="Surprise Me!"))
 async def proc_txt_random_album(message: types.Message):
     register_user_activity(message.from_user)
 
     album = get_random_album()
     if not album:
-        await message.answer(text='Can not find any album 😭')
+        await message.answer(text="Can not find any album 😭")
     try:
-        cover = InputFile(f'media/covers/{album.cover}')
+        cover = InputFile(f"media/covers/{album.cover}")
     except Exception as e:
         print(e)
-        cover = InputFile('app/img/404-error.webp')
+        cover = InputFile("app/img/404-error.webp")
 
     # id_photo = await bot.send_photo(
     title = album.title
@@ -91,8 +91,8 @@ async def proc_txt_random_album(message: types.Message):
     await bot.send_photo(
         chat_id=message.chat.id,
         photo=cover,
-        caption=f'<b>{title}</b> by {artist}, <em>{year}</em>',
-        parse_mode='HTML',
+        caption=f"<b>{title}</b> by {artist}, <em>{year}</em>",
+        parse_mode="HTML",
         reply_markup=generate_album_keyboard(
             wiki_url=album.wiki,
             spotify_url=album.spotify_url,
@@ -105,7 +105,5 @@ async def proc_txt_random_album(message: types.Message):
     await message.delete()
 
 
-if __name__ == '__main__':
-    executor.start_polling(
-        dispatcher=dp, skip_updates=True, on_startup=on_startup
-    )
+if __name__ == "__main__":
+    executor.start_polling(dispatcher=dp, skip_updates=True, on_startup=on_startup)
