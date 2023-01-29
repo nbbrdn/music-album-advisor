@@ -106,4 +106,6 @@ async def proc_txt_random_album(message: types.Message):
 
 
 if __name__ == "__main__":
-    executor.start_polling(dispatcher=dp, skip_updates=True, on_startup=on_startup)
+    executor.start_polling(
+        dispatcher=dp, skip_updates=True, on_startup=on_startup
+    )
