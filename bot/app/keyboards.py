@@ -5,9 +5,10 @@ from aiogram.types import (
     InlineKeyboardButton,
 )
 
-main_keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
-random_album_button = KeyboardButton(text="Surprise Me!")
-main_keyboard.add(random_album_button)
+random_album_button = KeyboardButton(text="😲 Surprise Me!")
+main_keyboard = ReplyKeyboardMarkup(
+    resize_keyboard=True, keyboard=[[random_album_button]]
+)
 
 
 def generate_album_keyboard(wiki_url, spotify_url, apple_url, youtube_url):
