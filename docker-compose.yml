@@ -1,24 +1,33 @@
-version: '3.7'
+version: "3.7"
 services:
   db:
     image: postgres:15.1
+    container_name: db
     restart: always
-    environment:
-      - POSTGRES_USER=advisor
-      - POSTGRES_PASSWORD=advisor
-      - POSTGRES_DB=advisor
-    logging:
-      options:
-        max-size: 10m
-        max-file: "3"
+    env_file:
+      - .env
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-      - ./sql/create_tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+
+  api:
+    build: ./backend
+    container_name: api
+    env_file:
+      - .env
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    volumes:
+      - static_data:/usr/src/app/static/
+      - media_data:/usr/src/app/media/
 
   bot:
     build: ./bot
+    container_name: bot
     env_file:
       - ".env"
     command: python main.py
@@ -26,7 +35,9 @@ services:
       - ./bot:/usr/src/advisor/
     restart: always
     depends_on:
-      - db
+      - api
 
 volumes:
   postgres_data:
+  static_data:
+  media_data:
