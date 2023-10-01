@@ -16,6 +16,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # External apps
+    "rest_framework",
     # Project apps
     "catalog.apps.CatalogConfig",
     "common.apps.CommonConfig",
