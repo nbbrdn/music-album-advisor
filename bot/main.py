@@ -1,18 +1,23 @@
 import asyncio
-import os
 import logging
+import os
+import requests
 import sys
 
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, F
 from aiogram.enums import ParseMode
 from aiogram.filters import Command, CommandStart
-from aiogram.types import Message
+from aiogram.types import KeyboardButton, Message, ReplyKeyboardMarkup
 from aiogram.utils.markdown import hbold
 
-from app.keyboards import main_keyboard
 
 TOKEN = os.getenv("TELEGRAM_TOKEN", "")
 dp = Dispatcher()
+
+random_album_button = KeyboardButton(text="Surprise Me!")
+main_keyboard = ReplyKeyboardMarkup(
+    resize_keyboard=True, keyboard=[[random_album_button]]
+)
 
 
 @dp.message(CommandStart())
@@ -33,8 +38,24 @@ async def proc_cmd_stop(message: Message):
     await message.delete()
 
 
+@dp.message(F.text.lower() == "surprise me!")
+async def proc_random_album_command(message: Message):
+    try:
+        headers = {"Accept": "application/json"}
+        response = requests.get("http://api:8000/api/random_album/", headers=headers)
+    except:
+        await message.answer("Something gone wrong.")
+    if response.status_code == 200:
+        response_data = response.json()
+        reply = response_data.get("yandex_url", "Can't get the album's url.")
+        await message.answer(reply)
+    else:
+        await message.answer("Can not find any album 😭")
+
+
 async def main() -> None:
     bot = Bot(TOKEN, parse_mode=ParseMode.HTML)
+    await bot.delete_webhook(drop_pending_updates=True)
     await dp.start_polling(bot)
 
 
