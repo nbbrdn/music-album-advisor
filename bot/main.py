@@ -7,13 +7,17 @@ import sys
 from aiogram import Bot, Dispatcher, F
 from aiogram.enums import ParseMode
 from aiogram.filters import Command, CommandStart
-from aiogram.types import Message
+from aiogram.types import KeyboardButton, Message, ReplyKeyboardMarkup
 from aiogram.utils.markdown import hbold
 
-from app.keyboards import main_keyboard
 
 TOKEN = os.getenv("TELEGRAM_TOKEN", "")
 dp = Dispatcher()
+
+random_album_button = KeyboardButton(text="Surprise Me!")
+main_keyboard = ReplyKeyboardMarkup(
+    resize_keyboard=True, keyboard=[[random_album_button]]
+)
 
 
 @dp.message(CommandStart())
