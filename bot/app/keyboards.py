@@ -5,7 +5,7 @@ from aiogram.types import (
     InlineKeyboardButton,
 )
 
-random_album_button = KeyboardButton(text="😲 Surprise Me!")
+random_album_button = KeyboardButton(text="Surprise Me!")
 main_keyboard = ReplyKeyboardMarkup(
     resize_keyboard=True, keyboard=[[random_album_button]]
 )
