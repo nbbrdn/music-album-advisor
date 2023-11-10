@@ -3,11 +3,11 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("SECRET_KEY", default="change-me")
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "change-me")
 
-DEBUG = os.getenv("DEBUG", default=True)
+DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ("*",)
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -16,9 +16,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # External apps
     "rest_framework",
-    # Project apps
     "catalog.apps.CatalogConfig",
     "common.apps.CommonConfig",
 ]
@@ -55,12 +53,12 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": os.getenv("DB_ENGINE", "django.db.backends.sqlite3"),
-        "NAME": os.getenv("POSTGRES_DB", os.path.join(BASE_DIR, "db.sqlite3")),
-        "USER": os.getenv("POSTGRES_USER", "advisor"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "password"),
-        "HOST": os.getenv("DB_HOST", "localhost"),
-        "PORT": os.getenv("DB_PORT", "5432"),
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get("DATABASE_NAME", "advisor"),
+        "USER": os.environ.get("DATABASE_USER", "advisor"),
+        "PASSWORD": os.environ.get("DATABASE_PASSWORD", "advisor"),
+        "HOST": os.environ.get("DATABASE_HOST", "localhost"),
+        "PORT": os.environ.get("DATABASE_PORT", "5432"),
     }
 }
 

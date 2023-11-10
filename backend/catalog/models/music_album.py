@@ -10,10 +10,6 @@ class MusicAlbum(models.Model):
     year = models.SmallIntegerField("Year")
     thumbnail = models.ImageField(upload_to="thumbnails/", null=True, blank=True)
     wiki_url = models.URLField("Wikipedia", null=True, blank=True)
-    spotify_url = models.URLField("Spotify", null=True, blank=True)
-    apple_url = models.URLField("Apple Music", null=True, blank=True)
-    youtube_url = models.URLField("YouTube", null=True, blank=True)
-    yandex_url = models.URLField("Yandex Music", null=True, blank=True)
 
     @property
     def thumbnail_preview(self):

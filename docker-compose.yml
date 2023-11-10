@@ -4,8 +4,9 @@ services:
     image: postgres:15.1
     container_name: db
     restart: always
-    env_file:
-      - .env
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
     volumes:
@@ -14,8 +15,14 @@ services:
   api:
     build: ./backend
     container_name: api
-    env_file:
-      - .env
+    environment: &api-environment
+      DJANGO_ENV: dev
+      DJANGO_SECRET_KEY: change-me
+      DATABASE_NAME: postgres
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
     command: python manage.py runserver 0.0.0.0:8000
     ports:
       - 8000:8000
